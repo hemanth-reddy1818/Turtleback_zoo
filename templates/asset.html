@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div class="employee">
+        <h3>employee</h3>
+        <a href="{{ url_for('employee') }} ">view</a>
+        <a href="{{ url_for('add_employee') }}"> add</a>
+        <a href="{{ url_for('update_employee') }}"> update</a>
+    </div>
+     <div class="Building">
+        <h3>Building</h3>
+        <a href="{{ url_for('view_building') }} ">view</a>
+        <a href="{{ url_for('add_building') }}"> add</a>
+        <a href="{{ url_for('update_building') }}"> update</a>
+    </div>
+
+    <div class="hourly_rate">
+        <h3>Hourly rate</h3>
+        <a href="{{ url_for('view_rate') }}">view</a>
+        <a href="{{ url_for('add_rate') }}">add</a>
+        <a href="{{ url_for('update_rate') }}">update</a>
+    </div>
+
+     <div class="Animal">
+        <h3>Animal</h3>
+        <a href="{{ url_for('view_animal') }}">view</a>
+        <a href="{{ url_for('add_animal') }}">add</a>
+        <a href="{{ url_for('update_animal') }}">update</a>
+     </div>
+
+
+
+
+</div>
+
+
+</body>
+</html>

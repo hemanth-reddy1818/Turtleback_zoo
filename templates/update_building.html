@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+</head>
+<body>
+    <h1>Employee Management</h1>
+
+
+    <form action="{{ url_for('update_building') }}" method="POST">
+        <label >Building ID:</label>
+        <input type="text" name="building_id" required><br>
+
+        <label >Building Name:</label>
+        <input type="text" name="building_name" ><br>
+
+
+
+
+        <label >Building type:</label>
+        <select id="building" name="b_type">
+            <option value="animal shelter">Animal shelter</option>
+            <option value="attraction">Attraction</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Concession stands">Concession stands</option>
+
+        </select><br>
+
+
+
+        <!-- Add more fields as needed -->
+
+        <button type="submit" name="Add">submit</button>
+
+    </form>
+</body>
+</html>

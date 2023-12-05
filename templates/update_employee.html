@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+</head>
+<body>
+    <h1>Employee Management</h1>
+
+
+    <form action="{{ url_for('update_employee') }}" method="POST">
+        <label >Employee ID:</label>
+        <input type="text" name="employee_id" required><br>
+
+        <label >First Name:</label>
+        <input type="text" name="first_name" ><br>
+
+        <label >Middle Name:</label>
+        <input type="text" name="middle_name">
+
+        <label >Last Name:</label>
+        <input type="text" name="last_name" ><br>
+
+        <label >Street:</label>
+        <input type="text" name="street" ><br>
+
+        <label >CITY:</label>
+        <input type="text" name="city" ><br>
+
+        <label >state:</label>
+        <input type="text" name="state" ><br>
+
+        <label >Zipcode:</label>
+        <input type="number" name="Zipcode"  maxlength="6"><br>
+
+        <label >Employee type:</label>
+        <select id="animal" name="Job_type">
+            <option value="Veterinarian">Veterinarian</option>
+            <option value="Animal care specialist">Animal care specialist</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Customer Service">Customer Service</option>
+            <option value="Ticket seller">Ticket seller</option>
+            <option value="Manager">Manager</option>
+
+        </select><br>
+
+
+
+        <!-- Add more fields as needed -->
+
+
+        <button type="submit" name="Update">Update</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <nav>
+
+        <div class="nav-items">
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url_for('about') %}">About</a></li>
+
+            <li><a href="{% url_for('asset') %}">Asset management</a></li>
+
+        </div>
+        <form action="#">
+            <input type="search" placeholder="Search" class="search-input" />
+            <button class="fas fa-search"></button>
+        </form>
+        <div class="checkout-contents">
+            <lord-icon src="https://cdn.lordicon.com/jjoolpwc.json" trigger="hover" stroke="bold" colors="primary:#ffffff,secondary:#e83a30" style="width:30px;height:30px"></lord-icon>
+            <lord-icon src="https://cdn.lordicon.com/gyandxnw.json" trigger="hover" stroke="bold" colors="primary:#ffffff,secondary:#c71f16" style="width:30px;height:30px;"></lord-icon>
+        </div>
+        </nav>
+
+</body>
+</html>

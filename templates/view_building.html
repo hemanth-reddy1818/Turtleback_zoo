@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1px">
+  {% for building in data %}
+    <tr>
+          <td>{{ building.Building_ID }}</td>
+          <td>{{ building.building_name }}</td>
+          <td>{{ building.b_type }}</td>
+
+
+    </tr>
+
+  {% endfor %}
+</table>
+
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+</head>
+<body>
+    <h1>Employee Management</h1>
+
+
+    <form action="{{ url_for('update_rate') }}" method="POST">
+        <label >ID:</label>
+        <input type="text" name="Hourly_ID" required><br>
+
+        <label >Hourly rate:</label>
+        <input type="text" name="rate" required><br>
+
+
+        <!-- Add more fields as needed -->
+
+        <button type="submit" name="Add">Update</button>
+
+    </form>
+</body>
+</html>

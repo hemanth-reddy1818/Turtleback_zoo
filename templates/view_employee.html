@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1px">
+  {% for employee in data %}
+    <tr>
+          <td>{{ employee.Employee_ID }}</td>
+          <td>{{ employee.F_NAME }}</td>
+          <td>{{ employee.L_NAME }}</td>
+          <td>{{ employee.M_NAME}}</td>
+          <td>{{ employee.street }}</td>
+          <td>{{ employee.CITY }}</td>
+          <td>{{ employee.STATE }}</td>
+          <td>{{ employee.ZIP }}</td>
+          <td>{{ employee.JOB_TYPE }}</td>
+          <td>{{ employee.SUPERID }}</td>
+          <td>{{ employee.H_ID }}</td>
+          <td>{{ employee.con_id }}</td>
+          <td>{{ employee.Zoo_id }}</td>
+
+    </tr>
+
+  {% endfor %}
+</table>
+
+
+</body>
+</html>
