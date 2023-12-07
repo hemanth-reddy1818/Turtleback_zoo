@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="{{ url_for('update_animal') }}" method="post">
+    <label >Animal id:</label>
+    <input type="number" name="Animal_ID" required><br>
+
+    <label >Animal Name:</label>
+    <input type="text" name="animal_name" ><br>
+
+    <select id="animal" name="sp_name">
+            <option value="Mammal">Mammal</option>
+            <option value="Amphibian">Amphibian</option>
+            <option value="Arachnid">Arachnid</option>
+            <option value="Bird">Bird</option>
+            <option value="Crustacean">Crustacean</option>
+            <option value="Fish">Fish</option>
+            <option value="Insect">Insect</option>
+            <option value="Mollusk">Mollusk</option>
+
+
+
+    </select><br>
+    <label>Animal status</label>
+    <select id="a_status" name="a_status" datatype="text">
+            <option value="Healthy">Healthy</option>
+            <option value="Maternity Leave">Maternity Leave</option>
+            <option value="Injured">Injured</option>
+            <option value="Died">Died</option>
+
+
+
+
+    </select><br>
+    <label>Birth year</label>
+    <input type="number" name="birth_year"><br>
+
+    <label>employee</label>
+    <input type="number" name="En_id"><br>
+
+    <label> Building</label>
+    <input type="number" name="b_id"><br>
+
+    <button type="submit">Update</button>
+
+
+</form>
+{% endblock %}

@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Management</title>
-</head>
-<body>
-    <h1>Employee Management</h1>
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <h1>Building Management</h1>
 
 
     <form action="{{ url_for('update_building') }}" method="POST">
@@ -35,5 +31,4 @@
         <button type="submit" name="Add">submit</button>
 
     </form>
-</body>
-</html>
+{% endblock %}

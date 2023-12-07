@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<table border="1px">
+{% extends 'base.html' %}
+
+
+{% block content %}
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
   {% for animal in data %}
     <tr>
           <td>{{ animal.Animal_ID }}</td>
@@ -13,7 +17,7 @@
           <td>{{ animal.sp_name }}</td>
          <td>{{ animal.a_status }}</td>
           <td>{{ animal.birth_year }}</td>
-          <td>{{ animal.en_id }}</td>
+          <td>{{ animal.En_id }}</td>
           <td>{{ animal.b_id }}</td>
 
 
@@ -23,5 +27,4 @@
 </table>
 
 
-</body>
-</html>
+{% endblock  %}

@@ -1,12 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<table border="1px">
-  {% for employee in data %}
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+  </thead>
+  <tbody>
+    <tr>
+       {% for employee in data %}
+
     <tr>
           <td>{{ employee.Employee_ID }}</td>
           <td>{{ employee.F_NAME }}</td>
@@ -18,15 +27,16 @@
           <td>{{ employee.ZIP }}</td>
           <td>{{ employee.JOB_TYPE }}</td>
           <td>{{ employee.SUPERID }}</td>
-          <td>{{ employee.H_ID }}</td>
-          <td>{{ employee.con_id }}</td>
-          <td>{{ employee.Zoo_id }}</td>
+          <td>{{ employee.Hourly_Rate }}</td>
+<!--          <td>{{ employee.con_id }}</td>-->
+<!--          <td>{{ employee.Zoo_id }}</td>-->
+<!--        -->
 
     </tr>
 
   {% endfor %}
+  </tbody>
 </table>
 
 
-</body>
-</html>
+{% endblock %}

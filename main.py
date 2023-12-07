@@ -1,3 +1,4 @@
+import sqlalchemy
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -16,14 +17,20 @@ def execute_query(query, params=None):
         result = db.session.execute(text(query), params)
         db.session.commit()
         return result
-    except Exception as e:
+    except sqlalchemy.exc.OperationalError as e:
         db.session.rollback()
+
         raise e
 
 
 @app.route('/')
 def test_query_execution():
     return render_template('index.html')
+
+
+@app.route("/error")
+def error():
+    return render_template("error.html")
 
 
 @app.route("/about")
@@ -38,7 +45,22 @@ def asset():
 
 @app.route("/asset/employee", methods=["GET", "POST"])
 def employee():
-    query = "SELECT * FROM Employee"
+    query = """SELECT 
+    e.Employee_ID,
+    e.F_NAME,
+    e.L_NAME,
+    e.M_NAME,
+    e.street,
+    e.CITY,
+    e.STATE,
+    e.ZIP,
+    e.JOB_TYPE,
+    e.SUPERID,
+    hr.rate AS Hourly_Rate
+FROM 
+    EMPLOYEE e
+LEFT JOIN 
+    hourly_rate hr ON e.H_ID = hr.Hourly_ID;"""
     result = execute_query(query)
     rows = result.fetchall()
     column_names = result.keys()
@@ -51,7 +73,7 @@ def employee():
 @app.route("/asset/employee/add", methods=["GET", "POST"])
 def add_employee():
     if request.method == "POST":
-        emp_id = request.form.get("employee_id")
+        SSN = request.form.get("SSN")
         first_name = request.form.get("first_name")
         mid_name = request.form.get("middle_name")
         last_name = request.form.get("last_name")
@@ -62,18 +84,25 @@ def add_employee():
         job_type = request.form.get("Job_type")
 
         # Check if both values are provided
-        if emp_id is not None and first_name is not None and mid_name is not None and last_name is not None and city is not None and state is not None and zipcode is not None and job_type is not None:
+        if SSN is not None and first_name is not None and mid_name is not None and last_name is not None and city is not None and state is not None and zipcode is not None and job_type is not None:
             # Use parameterized query to avoid SQL injection
-            query = "INSERT INTO Employee (Employee_id, F_NAME,L_NAME,M_NAME,street,CITY,STATE,ZIP,JOB_TYPE,SUPERID," \
+            query = "INSERT INTO Employee (SSN, F_NAME,L_NAME,M_NAME,street,CITY,STATE,ZIP,JOB_TYPE,SUPERID," \
                     "H_ID,con_id,Zoo_id) VALUES (" \
-                    ":emp_id, :first_name, :last_name, " \
+                    ":SSN, :first_name, :last_name, " \
                     ":middle_name,:street, :city ,:state, :zip, :type, :SUPERID, :H_ID, :con_id, :Zoo_id); "
-            params = {"emp_id": emp_id, "first_name": first_name, "middle_name": mid_name, "last_name": last_name,
+            params = {"SSN": SSN, "first_name": first_name, "middle_name": mid_name, "last_name": last_name,
                       "street": street,
                       "city": city, "state": state, "zip": zipcode, "type": job_type, "SUPERID": None, "H_ID": None,
                       "con_id": None, "Zoo_id": None}
-            execute_query(query, params)
-            return redirect(url_for('employee'))
+            try:
+                execute_query(query, params)
+            except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+                data = e.args[0]
+                return render_template("error.html", data=data)
+
+
+            else:
+                return redirect(url_for('employee'))
 
     return render_template("employee.html")
 
@@ -83,6 +112,7 @@ def update_employee():
     if request.method == "POST":
         emp = {
             "Employee_ID": request.form.get("employee_id"),
+            "SSN": request.form.get("SSN"),
             "F_NAME": request.form.get("first_name"),
             "M_NAME": request.form.get("middle_name"),
             "L_NAME": request.form.get("last_name"),
@@ -107,6 +137,7 @@ def update_employee():
         update_query = f"""
         UPDATE EMPLOYEE
         SET
+          SSN='{emp['SSN']}',
           F_NAME = '{emp['F_NAME']}',
           L_NAME = '{emp['L_NAME']}',
           M_NAME = '{emp['M_NAME']}',
@@ -252,18 +283,88 @@ def view_animal():
     rows = result.fetchall()
     column_names = result.keys()
     data = [dict(zip(column_names, row)) for row in rows]
+    print(data)
 
     return render_template("view_animal.html", data=data)
 
 
 @app.route("/asset/animal/add", methods=["GET", "POST"])
 def add_animal():
-    pass
+    if request.method == "POST":
+        animal_name = request.form.get("animal_name")
+        sp_name = request.form.get("sp_name")
+        a_status = request.form.get("a_status")
+        birth_year = request.form.get("birth_year")
+        En_id = request.form.get("En_id")
+        b_id = request.form.get("b_id")
+
+        if animal_name is not None and sp_name is not None and a_status is not None and birth_year is not None and En_id is not None and b_id is not None:
+            query = "INSERT INTO animal (a_status, birth_year,animal_name,sp_name,En_id,b_id" \
+                    ") VALUES (" \
+                    ":a_status, :birth_year, :animal_name, " \
+                    ":sp_name,:En_id, :b_id ); "
+            params = {"a_status": a_status, "birth_year": birth_year, "animal_name": animal_name, "sp_name": sp_name,
+                      "En_id": En_id,
+                      "b_id": b_id}
+
+            try:
+                execute_query(query, params)
+            except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+                data = e.args[0]
+                return render_template("error.html", data=data)
+
+
+            else:
+                return redirect(url_for('view_animal'))
+
+    return render_template("add_animal.html")
 
 
 @app.route("/asset/animal/update", methods=["GET", "POST"])
 def update_animal():
-    pass
+    if request.method == "POST":
+        animal = {
+            "Animal_ID": request.form.get("Animal_ID"),
+            "animal_name": str(request.form.get("animal_name")),
+            "sp_name": str(request.form.get("sp_name")),
+            "a_status": str(request.form.get("a_status")),
+            "birth_year": request.form.get("birth_year"),
+            "En_id": request.form.get("En_id"),
+            "b_id": request.form.get("b_id"),
+        }
+        print(animal["Animal_ID"])
+        query = f"select * from animal where Animal_ID={animal['Animal_ID']}"
+        result = execute_query(query)
+        rows = result.fetchall()
+        column_names = result.keys()
+        data = [dict(zip(column_names, row)) for row in rows]
+        for key in animal.keys():
+            if animal[f"{key}"] == "":
+                animal[f"{key}"] = data[0][f"{key}"]
+        print(animal)
+
+        update_query = f"""
+                            UPDATE Animal
+                            SET
+                            
+                            
+                              a_status= "{str(animal['a_status'])}",
+                              birth_year= {animal['birth_year']},
+                              animal_name= "{str(animal['animal_name'])}",
+                              sp_name= "{str(animal['sp_name'])}",
+                              En_id= {animal['En_id']},
+                              b_id= {animal['b_id']}
+                             
+
+
+                            WHERE
+                              Animal_ID = {animal['Animal_ID']};
+                              
+                            """
+
+        execute_query(update_query)
+        return redirect(url_for('view_animal'))
+    return render_template("update_animal.html")
 
 
 if __name__ == '__main__':

@@ -58,8 +58,10 @@ CREATE TABLE concession(
 );
 
 -- Create the EMPLOYEE table with foreign key references
+-- Create the EMPLOYEE table with foreign key references
 CREATE TABLE EMPLOYEE (
-  Employee_ID INT PRIMARY KEY NOT NULL,
+  Employee_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT ,
+  SSN INT UNIQUE NOT NULL,
   F_NAME VARCHAR(45) NULL,
   L_NAME VARCHAR(45) NULL,
   M_NAME VARCHAR(45) NULL,
@@ -73,7 +75,7 @@ CREATE TABLE EMPLOYEE (
   con_id INT NULL,
   Zoo_id INT NUll,
   FOREIGN KEY (Zoo_id) REFERENCES zoo_admissions (Z_ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY (con_id) REFERENCES Concession (C_ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (con_id) REFERENCES concession (C_ID) ON DELETE NO ACTION ON UPDATE NO ACTION, -- Corrected reference to 'concession'
   FOREIGN KEY (SUPERID) REFERENCES EMPLOYEE (Employee_ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (H_ID) REFERENCES hourly_rate(Hourly_ID) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -97,7 +99,7 @@ CREATE TABLE enclosure (
 
 
 CREATE TABLE Animal(
-  Animal_ID INT PRIMARY KEY NOT NULL,
+  Animal_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   a_status VARCHAR(20) NULL,
   birth_year INT NULL,
   animal_name VARCHAR(50) NULL,
@@ -144,6 +146,8 @@ CREATE TABLE cares_for(
   FOREIGN KEY (E_id) REFERENCES EMPLOYEE (Employee_ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (spec_name) REFERENCES Species (Species_name) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+
+
 
 
 -- Insert into hourly_rate
@@ -227,28 +231,28 @@ INSERT INTO concession (C_ID, product) VALUES
 (10, 'Books');
 
 -- Insert into EMPLOYEE
--- Insert employees without supervisor
--- Insert supervisors
-INSERT INTO EMPLOYEE (Employee_ID, F_NAME, L_NAME, M_NAME, street, CITY, STATE, ZIP, JOB_TYPE, SUPERID, H_ID, con_id, Zoo_id) VALUES
-(1, 'John', 'Doe', 'M', '123 Main St', 'Cityville', 'CA', '12345', 'Cashier', NULL, 1, NULL, NULL),
-(2, 'Jane', 'Smith', 'L', '456 Oak St', 'Townsville', 'NY', '67890', 'Zookeeper', 1, 2, NULL, NULL);
-
--- Insert employees under supervisor 1
-INSERT INTO EMPLOYEE (Employee_ID, F_NAME, L_NAME, M_NAME, street, CITY, STATE, ZIP, JOB_TYPE, SUPERID, H_ID, con_id, Zoo_id) VALUES
-(3, 'Bob', 'Johnson', 'R', '789 Pine St', 'Villagetown', 'TX', '56789', 'Security', 1, 3, 1, 1),
-(4, 'Alice', 'Williams', 'A', '234 Cedar St', 'Hamletville', 'FL', '34567', 'Gift Shop Attendant', 1, 4, 4, 6);
--- Insert more employees under supervisor 1
-INSERT INTO EMPLOYEE (Employee_ID, F_NAME, L_NAME, M_NAME, street, CITY, STATE, ZIP, JOB_TYPE, SUPERID, H_ID, con_id, Zoo_id) VALUES
-(5, 'Charlie', 'Brown', 'C', '567 Birch St', 'Hometown', 'AZ', '45678', 'Tour Guide', 1, 5, NULL, 2),
-(6, 'Eva', 'Smith', 'E', '890 Oak St', 'Villagetown', 'TX', '12345', 'Cleaner', 1, 1, 2, 3),
-(7, 'Michael', 'Jones', 'M', '123 Elm St', 'Cityville', 'CA', '23456', 'Event Coordinator', 1, 8, NULL, 7);
-
--- Insert 4 more employees under supervisor 1
-INSERT INTO EMPLOYEE (Employee_ID, F_NAME, L_NAME, M_NAME, street, CITY, STATE, ZIP, JOB_TYPE, SUPERID, H_ID, con_id, Zoo_id) VALUES
-(8, 'Sara', 'Miller', 'S', '456 Maple St', 'Townsville', 'NY', '78901', 'Reptile Keeper', 1, 6, NULL, 8),
-(9, 'David', 'Smith', 'D', '789 Pine St', 'Villagetown', 'TX', '56789', 'Insect Keeper', 1, 7, NULL, 9),
-(10, 'Emily', 'Johnson', 'E', '234 Cedar St', 'Hamletville', 'FL', '34567', 'Aquarium Keeper', 1, 8, NULL, 5),
-(11, 'Jason', 'Taylor', 'J', '678 Walnut St', 'Cityville', 'CA', '45678', 'Gift Shop Attendant', 1, 9, 4, 6);
+INSERT INTO EMPLOYEE (Employee_ID, SSN, F_NAME, L_NAME, M_NAME, street, CITY, STATE, ZIP, JOB_TYPE, SUPERID, H_ID, con_id, Zoo_id)
+VALUES
+(1, 111111111, 'John', 'Doe', 'M', '123 Main St', 'Cityville', 'CA', '12345', 'Supervisor', NULL, 1, NULL, NULL),
+(2, 222222222, 'Jane', 'Smith', 'L', '456 Oak St', 'Townsville', 'NY', '67890', 'Veterinarian', 1, 2, NULL, NULL),
+(3, 333333333, 'Bob', 'Johnson', 'R', '789 Pine St', 'Villagetown', 'TX', '56789', 'Animal Care Specialist', 1, 3, 1, NULL),
+(4, 444444444, 'Alice', 'Williams', 'A', '234 Cedar St', 'Hamletville', 'FL', '34567', 'Animal Care Trainer', 1, 3, 4, NULL),
+(5, 555555555, 'Charlie', 'Brown', 'C', '567 Birch St', 'Hometown', 'AZ', '45678', 'Maintenance', 1, 4, NULL, NULL),
+(6, 666666666, 'Eva', 'Smith', 'E', '890 Oak St', 'Villagetown', 'TX', '12345', 'Maintenance', 1, 4, 2, NULL),
+(7, 777777777, 'Michael', 'Jones', 'M', '123 Elm St', 'Cityville', 'CA', '23456', 'Customer Service', 1, 5, NULL, NULL),
+(8, 888888888, 'Sara', 'Miller', 'S', '456 Maple St', 'Townsville', 'NY', '78901', 'Ticket Seller', 1, 6, NULL, 3),
+(9, 999999999, 'Olivia', 'Smith', 'O', '890 Birch St', 'Townsville', 'NY', '12345', 'Veterinarian', 1, 2, NULL, NULL),
+(10, 101101010, 'Mia', 'Brown', 'M', '567 Oak St', 'Hometown', 'AZ', '45678', 'Animal Care Specialist', 1, 3, 2, NULL),
+(11, 202202020, 'Jason', 'Taylor', 'J', '678 Walnut St', 'Cityville', 'CA', '45678', 'Supervisor', NULL, 1, 4, NULL),
+(12, 303303030, 'Mia', 'Brown', 'M', '567 Oak St', 'Hometown', 'AZ', '45678', 'Veterinarian', 11, 2, 2, NULL),
+(13, 404404040, 'Liam', 'Johnson', 'L', '789 Pine St', 'Villagetown', 'TX', '56789', 'Supervisor', NULL, 1, 1, 1),
+(14, 505505050, 'Emma', 'Davis', 'E', '234 Cedar St', 'Hamletville', 'FL', '34567', 'Maintenance', 13, 4, NULL, 2),
+(15, 606606060, 'Aiden', 'Garcia', 'A', '567 Birch St', 'Hometown', 'AZ', '45678', 'Ticket Seller', 11, 6, NULL, 5),
+(16, 707707070, 'Mia', 'Brown', 'M', '890 Oak St', 'Villagetown', 'TX', '12345', 'Customer Service', 13, 5, NULL, NULL),
+(17, 808808080, 'Liam', 'Johnson', 'L', '123 Elm St', 'Cityville', 'CA', '23456', 'Animal Care Specialist', 13, 3, 1, NULL),
+(18, 909909090, 'Emma', 'Davis', 'E', '456 Maple St', 'Townsville', 'NY', '78901', 'Maintenance', 11, 4, NULL, 3),
+(19, 123456789, 'Aiden', 'Garcia', 'A', '567 Oak St', 'Hometown', 'AZ', '45678', 'Veterinarian', 11, 2, NULL, NULL),
+(20, 987654321, 'Mia', 'Brown', 'M', '678 Walnut St', 'Cityville', 'CA', '45678', 'Animal Care Specialist', 13, 3, 2, NULL);
 
 -- Insert into animal_show
 INSERT INTO animal_show (A_ID, senior_price, adult_price, children_price, cost_per_show) VALUES
@@ -346,6 +350,6 @@ INSERT INTO cares_for (E_id, spec_name) VALUES
 (6, 'Insect'),
 (7, 'Arachnid'),
 (8, 'Mollusk'),
-(9, 'Crustacean'),
-(10, 'Rodent');
+(9, 'Crustacean')
+
 

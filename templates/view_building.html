@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<table border="1px">
+{% extends 'base.html' %}
+
+
+{% block content %}
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
   {% for building in data %}
     <tr>
           <td>{{ building.Building_ID }}</td>
@@ -19,5 +23,4 @@
 </table>
 
 
-</body>
-</html>
+{% endblock %}
