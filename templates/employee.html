@@ -2,50 +2,61 @@
 
 
 {% block content %}
-    <h1>Employee Management</h1>
-
-
+<div class="wrapper">
+    <div class="title">
+        Employee Management
+    </div>
     <form action="{{ url_for('add_employee') }}" method="POST">
-        <label >SSN:</label>
-        <input type="text" name="SSN" required><br>
-
-        <label >First Name:</label>
-        <input type="text" name="first_name" required><br>
-
-        <label >Middle Name:</label>
-        <input type="text" name="middle_name" required>
-
-        <label >Last Name:</label>
-        <input type="text" name="last_name" required><br>
-
-        <label >Street:</label>
-        <input type="text" name="street" required><br>
-
-        <label >CITY:</label>
-        <input type="text" name="city" required><br>
-
-        <label >state:</label>
-        <input type="text" name="state" required><br>
-
-        <label >Zipcode:</label>
-        <input type="number" name="Zipcode" required maxlength="6"><br>
-
-        <label >Employee type:</label>
-        <select id="animal" name="Job_type">
-            <option value="Veterinarian">Veterinarian</option>
-            <option value="Animal care specialist">Animal care specialist</option>
-            <option value="Maintenance">Maintenance</option>
-            <option value="Customer Service">Customer Service</option>
-            <option value="Ticket seller">Ticket seller</option>
-            <option value="Manager">Manager</option>
-
-        </select><br>
-
-
-
-        <!-- Add more fields as needed -->
-
-        <button type="submit" name="Add">Add</button>
-
+        <div class="form">
+        <div class="inputfield">
+            <label>SSN</label>
+            <input type="text" class="input" name="SSN" required>
+        </div>  
+        <div class="inputfield">
+            <label >First Name</label>
+            <input type="text" name="first_name" class="input" required>
+        </div>  
+        <div class="inputfield">
+            <label >Middle Name</label>
+            <input type="text" name="middle_name" class="input" required>
+        </div>  
+        <div class="inputfield">
+            <label >Last Name</label>
+            <input type="text" name="last_name" class="input" required>
+        </div> 
+            <div class="inputfield">
+            <label>Employee type</label>
+            <div class="custom_select">
+                <select id="animal" name="Job_type">
+                    <option value="Veterinarian">Veterinarian</option>
+                    <option value="Animal care specialist">Animal care specialist</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Ticket seller">Ticket seller</option>
+                    <option value="Manager">Manager</option>
+                </select>
+            </div>
+        </div> 
+        <div class="inputfield">
+            <label >Street</label>
+            <input type="text" name="street" class="input" required>
+        </div> 
+        <div class="inputfield">
+            <label >City</label>
+            <input type="text" name="city" class="input" required>
+        </div> 
+        <div class="inputfield">
+            <label >State</label>
+            <input type="text" name="state" class="input" required>
+        </div> 
+        <div class="inputfield">
+            <label >Zipcode</label>
+        <input type="number" name="Zipcode" class="input" required maxlength="6">
+        </div>  
+        <div class="inputfield">
+            <button type="submit" name="Add" class="btn">Add</button>
+        </div>
+        </div>
     </form>
+</div>
 {% endblock %}
