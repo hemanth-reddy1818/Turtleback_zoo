@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h2>Daily Reports</h2>
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
+  {% for  type  in data %}
+    <tr>
+          <td>{{ type.Event }}</td>
+          <td>{{ type.Revenue_id }}</td>
+          <td>{{ type.senior_citizens}}</td>
+          <td>{{ type.adults }}</td>
+          <td>{{ type.children }}</td>
+
+
+
+    </tr>
+
+  {% endfor %}
+
+</table>
+
+
+
+
+{% endblock %}

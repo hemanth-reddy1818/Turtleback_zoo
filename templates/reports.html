@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+      <div class="divide">
+            <div class=" wrapper">
+            <div class="title">
+               <h3 class="asset-title">Reports</h3>
+            </div>
+
+            <div class="daily_reports">
+
+            <form  method="post" action="{{url_for('daily_report') }}">
+                <div class="form">
+                     <div class="inputfield">
+                      <input type="date" name="desired_date" class="input"  required>
+
+                </div>
+
+                <div class="inputfield">
+                     <button type="submit" name="Add" class="btn">Daily Report</button>
+                </div>
+                </div>
+
+
+            </form>
+
+            </div>
+
+
+
+
+               <form  method="post" action="{{url_for('attendance_report') }}">
+                <div class="form">
+                     <div class="inputfield">
+                      <input type="date" name="desired_date" class="input"  required>
+
+                </div>
+
+                <div class="inputfield">
+                     <button type="submit" name="Add" class="btn">Attendance Report</button>
+                </div>
+                </div>
+            </form>
+
+       </div></div>
+
+        <div class="attraction box">
+            <h3 class="asset-title">Animal Reports</h3>
+            <a href="{{ url_for('population_report') }} ">Population report</a>
+            <a href="{{ url_for('employee_report') }}"> Employee report</a>
+
+       </div>
+       <div class="attraction box">
+            <h3 class="asset-title"> Top three Attractions</h3>
+           <form action="{{ url_for('top_three') }}" method="post">
+               <div class="inputfield">
+                 <label>Start date</label>
+                 <input type="date" name="start_date" class="input" required>
+               </div>
+               <div class="inputfield">
+                 <label>Enddate date</label>
+                 <input type="date" name="end_date" class="input" required>
+               </div>
+               <div class="inputfield">
+                <button type="submit" name="Add" class="btn">Generate</button>
+               </div>
+           </form>
+       </div>
+
+        <div class="attraction box">
+            <h3 class="asset-title"> Top 5 Attractions</h3>
+           <form action="{{ url_for('top_five') }}" method="post">
+              <div class="custom_select">
+                <select id="month" name="month">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+               </div>
+
+               <div class="inputfield">
+                <button type="submit" name="Add" class="btn">Generate</button>
+               </div>
+           </form>
+
+        </div>
+
+        <div class="attraction box">
+            <h3 class="asset-title"> Top three Attractions</h3>
+           <form action="{{ url_for('average_revenue') }}" method="post">
+               <div class="inputfield">
+                 <label>Start date</label>
+                 <input type="date" name="start_date" class="input" required>
+               </div>
+               <div class="inputfield">
+                 <label>Enddate date</label>
+                 <input type="date" name="end_date" class="input" required>
+               </div>
+               <div class="inputfield">
+                <button type="submit" name="Add" class="btn">Generate</button>
+               </div>
+           </form>
+       </div>
+
+
+{% endblock %}

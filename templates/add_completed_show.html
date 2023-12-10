@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="wrapper">
+    <div class="title">
+        Show Management
+    </div>
+    <form action="{{ url_for('add_show') }}" method="POST">
+        <div class="form">
+            <div class="inputfield">
+                <label >Revenue ID</label>
+                <input type="text" name="rev_id" class="input" required>
+            </div>  
+            <div class="inputfield">
+                <label >date</label>
+                <input type="date" name="show_Date" class="input" required>
+            </div>
+           <div class="inputfield">
+                <label >date</label>
+                <input type="time" name="show_time" class="input" required>
+            </div>
+            <div class="inputfield">
+                <label >Adult tickets sold</label>
+                <input type="number" name="adult_tickets_sold" class="input" required>
+            </div>
+           <div class="inputfield">
+                <label >Children tickets sold</label>
+                <input type="number" name="children_tickets_sold" class="input" required>
+           </div>
+           <div class="inputfield">
+                <label >senior citizen tickets sold</label>
+                <input type="number" name="sr_citizen_tickets_sold" class="input" required>
+           </div>
+
+
+
+            <div class="inputfield">
+                <button type="submit" name="Add" class="btn">Add</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

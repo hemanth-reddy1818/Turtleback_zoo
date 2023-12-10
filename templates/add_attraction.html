@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="wrapper">
+    <div class="title">
+        Attraction
+    </div>
+    <form action="{{ url_for('add_attraction') }}" method="POST">
+        <div class="form">
+
+
+                <div class="inputfield">
+                <label>Attraction Type</label>
+                <div class="custom_select">
+                    <select id="attraction" name="attraction_type">
+                        <option value="zoo_admission">zoo_admission</option>
+                        <option value="animal_show">animal_show</option>
+
+                    </select>
+                </div>
+
+
+                </div>
+            <div class="inputfield">
+                <label >name</label>
+                <input type="text" name="attraction_name" class="input" required>
+             </div>
+             <div class="inputfield">
+                <label >Adult price</label>
+                <input type="number" name="adult_price" class="input" required>
+             </div>
+             <div class="inputfield">
+                <label >Senior price</label>
+                <input type="number" name="senior_price" class="input" required>
+             </div>
+
+             <div class="inputfield">
+                <label >Children price</label>
+                <input type="number" name="children_price" class="input" required>
+             </div>
+            <div class="inputfield">
+                <button type="submit" name="Add" class="btn">Add</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

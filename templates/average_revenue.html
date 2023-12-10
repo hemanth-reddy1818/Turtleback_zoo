@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% if data %}
+
+
+<h2> Reports</h2>
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
+  {% for  type  in data %}
+    <tr>
+          <td>{{ type.sources }}</td>
+          <td>{{ type.average_revenue }}</td>
+          <td>{{ type.Total_participation }}</td>
+
+
+
+
+
+    </tr>
+
+  {% endfor %}
+
+</table>
+
+{% else %}
+<h1> No data in selected dates</h1>
+
+{% endif %}
+
+
+
+
+
+{% endblock %}

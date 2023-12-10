@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 import pymysql, cryptography
+from datetime import datetime
 
 pymysql.install_as_MySQLdb()
 
@@ -33,9 +34,9 @@ def error():
     return render_template("error.html")
 
 
-@app.route("/about")
-def about():
-    return render_template("about.html")
+@app.route("/reports")
+def reports():
+    return render_template("reports.html")
 
 
 @app.route("/asset")
@@ -82,18 +83,30 @@ def add_employee():
         state = request.form.get("state")
         zipcode = request.form.get("Zipcode")
         job_type = request.form.get("Job_type")
+        start_date = request.form.get("start_date")
+
+        employee_salary = {
+            "Veterinarian": 1,
+            "Animal care specialist": 1,
+            "Maintenance": 2,
+            "Customer Service": 3,
+            "Ticket seller": 4,
+            "Manager": 5,
+            "Sales": 6
+        }
 
         # Check if both values are provided
-        if SSN is not None and first_name is not None and mid_name is not None and last_name is not None and city is not None and state is not None and zipcode is not None and job_type is not None:
+        if SSN is not None and first_name is not None and mid_name is not None and last_name is not None and city is not None and state is not None and zipcode is not None and job_type is not None and start_date is not None:
             # Use parameterized query to avoid SQL injection
             query = "INSERT INTO Employee (SSN, F_NAME,L_NAME,M_NAME,street,CITY,STATE,ZIP,JOB_TYPE,SUPERID," \
-                    "H_ID,con_id,Zoo_id) VALUES (" \
+                    "H_ID,con_id,Zoo_id,start_date) VALUES (" \
                     ":SSN, :first_name, :last_name, " \
-                    ":middle_name,:street, :city ,:state, :zip, :type, :SUPERID, :H_ID, :con_id, :Zoo_id); "
+                    ":middle_name,:street, :city ,:state, :zip, :type, :SUPERID, :H_ID, :con_id, :Zoo_id, :start_date); "
             params = {"SSN": SSN, "first_name": first_name, "middle_name": mid_name, "last_name": last_name,
                       "street": street,
-                      "city": city, "state": state, "zip": zipcode, "type": job_type, "SUPERID": None, "H_ID": None,
-                      "con_id": None, "Zoo_id": None}
+                      "city": city, "state": state, "zip": zipcode, "type": job_type, "SUPERID": 1,
+                      "H_ID": employee_salary[f"{job_type}"],
+                      "con_id": None, "Zoo_id": None, "start_date": start_date}
             try:
                 execute_query(query, params)
             except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
@@ -365,6 +378,408 @@ def update_animal():
         execute_query(update_query)
         return redirect(url_for('view_animal'))
     return render_template("update_animal.html")
+
+
+@app.route("/attraction/view", methods=["GET", "POST"])
+def view_attraction():
+    animal_show_query = "SELECT * FROM animal_show"
+    result = execute_query(animal_show_query)
+    rows = result.fetchall()
+    column_names = result.keys()
+    animal_data = [dict(zip(column_names, row)) for row in rows]
+
+    query = "SELECT * FROM zoo_admissions"
+    result = execute_query(query)
+    rows = result.fetchall()
+    column_names = result.keys()
+    data = [dict(zip(column_names, row)) for row in rows]
+
+    return render_template("view_attraction.html", data=animal_data, data2=data)
+
+
+@app.route("/attraction/add", methods=["GET", "POST"])
+def add_attraction():
+    if request.method == "POST":
+        attraction_type = request.form.get("attraction_type")
+        attraction_name = request.form.get("attraction_name")
+        adult_price = request.form.get("adult_price")
+        children_price = request.form.get("children_price")
+        senior_price = request.form.get("senior_price")
+
+        if attraction_type is not None and attraction_name is not None and adult_price is not None and children_price is not None and senior_price is not None:
+            params = {"children_price": children_price, "show_name": attraction_name, "senior_price": senior_price,
+                      "adult_price": adult_price,
+                      "attraction_type": attraction_type}
+            query1 = "INSERT INTO Revenue_types (r_type, b_id" \
+                     ") VALUES (" \
+                     ":attraction_type, 3 " \
+                     "); "
+            execute_query(query1, params)
+            last_row_query = "SELECT * FROM Revenue_types ORDER BY Revenue_ID DESC LIMIT 1;"
+            result = execute_query(last_row_query)
+            rows = result.fetchall()
+            column_names = result.keys()
+            data = [dict(zip(column_names, row)) for row in rows]
+
+            if attraction_type == "zoo_admission":
+                query = f"INSERT INTO zoo_admissions (Z_ID,show_name,senior_price, adult_price,children_price" \
+                        f") VALUES ({data[0]['Revenue_ID']}," \
+                        ":show_name,:senior_price, :adult_price, :children_price " \
+                        "); "
+            else:
+                query = "INSERT INTO animal_show (A_ID,show_name,senior_price, adult_price,children_price" \
+                        f") VALUES ({data['Revenue_ID']}," \
+                        ":show_name,:senior_price, :adult_price, :children_price " \
+                        "); "
+
+            execute_query(query, params)
+            return redirect(url_for('view_attraction'))
+
+    return render_template("add_attraction.html")
+
+
+@app.route("/daily_report", methods=["GET", "POST"])
+def daily_report():
+    # Initialize data to None
+    data = None
+
+    if request.method == "POST":
+        desired_date = request.form.get("desired_date")
+        if desired_date is not None:
+            # Use parameterized query to avoid SQL injection
+
+            query = f"""
+                -- Select Zoo Admissions data
+                SELECT
+                    'Zoo Admissions' AS Event_Type,
+                    za.Z_ID AS Revenue_id,
+                    za.show_name as name,
+                    ((za.senior_price * ret.sr_citizen_tickets_sold) +
+                     (za.adult_price * ret.adult_tickets_sold) +
+                     (za.children_price * ret.children_tickets_sold)) AS Revenue
+                FROM
+                    zoo_admissions za, revenue_events_tickets ret
+                WHERE
+                    za.Z_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                UNION
+
+                -- Select Animal Shows data
+                SELECT
+                    'Animal shows' AS Event_Type,
+                    ash.A_ID AS Revenue_id,
+                    ash.show_name as name,
+                    ((ash.senior_price * ret.sr_citizen_tickets_sold) +
+                     (ash.adult_price * ret.adult_tickets_sold) +
+                     (ash.children_price * ret.children_tickets_sold)) AS Revenue
+                FROM
+                    animal_show ash, revenue_events_tickets ret
+                WHERE
+                    ash.A_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                UNION
+
+                -- Select Concessions data
+                SELECT
+                
+                    'concession' AS Event_Type,
+                    cs.C_ID AS Revenue_id,
+                    cs.product as name,
+                    ((cs.price * ret.sr_citizen_tickets_sold) +
+                     (cs.price * ret.adult_tickets_sold) +
+                     (cs.price * ret.children_tickets_sold)) AS Revenue
+                FROM
+                    concession cs, revenue_events_tickets ret
+                WHERE
+                    cs.C_ID = ret.Rev_id AND ret.show_Date = :desired_date;
+            """
+
+            # Execute the query with the parameters
+            params = {"desired_date": desired_date}
+            # Execute the query
+            result = execute_query(query, params)
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+            total = 0
+
+            for event in data:
+                total += event["Revenue"]
+
+    return render_template("daily_report.html", data=data, total=total)
+
+
+@app.route("/attendance_report", methods=["GET", "POST"])
+def attendance_report():
+    # Initialize data to None
+    data = None
+
+    if request.method == "POST":
+        desired_date = request.form.get("desired_date")
+        if desired_date is not None:
+            # Use parameterized query to avoid SQL injection
+
+            query = f"""
+                -- Select Zoo Admissions data
+                SELECT
+                    'Zoo Admissions' AS Event,
+                    za.Z_ID AS Revenue_id,
+                     ret.sr_citizen_tickets_sold as senior_citizens,
+                      ret.adult_tickets_sold as adults,
+                    ret.children_tickets_sold AS children
+                FROM
+                    zoo_admissions za, revenue_events_tickets ret
+                WHERE
+                    za.Z_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                UNION
+
+                -- Select Animal Shows data
+                SELECT
+                    'Animal shows' AS Event,
+                    ash.A_ID AS Revenue,
+                    ret.sr_citizen_tickets_sold as senior_citizens,
+                    ret.adult_tickets_sold as adults,
+                    ret.children_tickets_sold AS children
+                FROM
+                    animal_show ash, revenue_events_tickets ret
+                WHERE
+                    ash.A_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                UNION
+
+                -- Select Concessions data
+                SELECT
+                    cs.product AS Event,
+                    cs.C_ID AS Revenue_id,
+                    ret.sr_citizen_tickets_sold as senior_citizens,
+                    ret.adult_tickets_sold as adults,
+                    ret.children_tickets_sold AS children
+                FROM
+                    concession cs, revenue_events_tickets ret
+                WHERE
+                    cs.C_ID = ret.Rev_id AND ret.show_Date = :desired_date;
+            """
+
+            # Execute the query with the parameters
+            params = {"desired_date": desired_date}
+            # Execute the query
+            result = execute_query(query, params)
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+
+    return render_template("attendance_report.html", data=data)
+
+
+@app.route("/population_report")
+def population_report():
+    query = """SELECT Species.Species_name AS Species, a_status, COUNT(*) AS Total_Count, SUM(Species.Food_cost) AS Total_Food_Cost
+          FROM Animal
+          JOIN Species ON Animal.sp_name = Species.Species_name
+          GROUP BY Species.Species_name, a_status;
+          """
+    result = execute_query(query)
+
+    # Fetch data and column names
+    rows = result.fetchall()
+    column_names = result.keys()
+
+    # Convert the result into a list of dictionaries
+    data = [dict(zip(column_names, row)) for row in rows]
+    return render_template("population_report.html", data=data)
+
+
+@app.route("/employee_report")
+def employee_report():
+    query = """
+    SELECT Species.Species_name AS Species, hourly_rate.rate * 40 * 4 AS Employee_cost
+    FROM Species, Employee, hourly_rate
+    WHERE Species.emp_id = Employee.Employee_id
+        AND Employee.H_ID = hourly_rate.Hourly_ID
+    """
+
+    result = execute_query(query)
+    # Handle the result as needed
+
+    # Fetch data and column names
+    rows = result.fetchall()
+    column_names = result.keys()
+
+    # Convert the result into a list of dictionaries
+    data = [dict(zip(column_names, row)) for row in rows]
+    return render_template("employee_report.html", data=data)
+
+
+@app.route("/top3", methods=["GET", "POST"])
+def top_three():
+    if request.method == "POST":
+        start_date = request.form.get("start_date")
+        end_date = request.form.get("end_date")
+        if start_date is not None and end_date is not None:
+            query = f"""
+            
+               SELECT za.Z_ID as show_id,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
+               FROM  zoo_admissions za,revenue_events_tickets ret
+            where za.Z_ID=ret.Rev_id and ret.show_Date between '{start_date}' and '{end_date}'
+               union
+
+                SELECT ash.A_ID as show_id,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
+                FROM  animal_show ash,revenue_events_tickets ret
+                where ash.A_ID=ret.Rev_id and ret.show_Date between '{start_date}' and '{end_date}'
+
+                ORDER BY Revenue DESC
+                LIMIT 3;
+
+            """
+            result = execute_query(query)
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+            return render_template("top_three.html", data=data)
+
+
+@app.route("/top5", methods=["GET", "POST"])
+def top_five():
+    if request.method == "POST":
+
+        month = request.form.get("month")
+        month = str(month)
+        print(month)
+        month_number = {
+            "january": 1,
+            "february": 2,
+            "march": 3,
+            "april": 4,
+            "may": 5,
+            "june": 6,
+            "july": 7,
+            "august": 8,
+            "september": 9,
+            "october": 10,
+            "november": 11,
+            "december": 12
+        }
+        print(month_number)
+
+        if month is not None:
+            query = f"""
+            
+        
+        SELECT za.Z_ID as show_id,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
+        FROM  zoo_admissions za,revenue_events_tickets ret
+        where za.Z_ID=ret.Rev_id and Month(ret.show_Date)={month_number[f'{month.lower()}']}
+        union
+
+        SELECT ash.A_ID as show_id,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
+        FROM  animal_show ash,revenue_events_tickets ret
+        where ash.A_ID=ret.Rev_id and Month(ret.show_Date)={month_number[f'{month.lower()}']}
+
+        ORDER BY Revenue DESC
+        LIMIT 5;
+
+
+            """
+
+            result = execute_query(query)
+            # Handle the result as needed
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+            print(data)
+    return render_template("top_five.html", data=data)
+
+
+@app.route("/average_revenue", methods=["GET", "POST"])
+def average_revenue():
+    if request.method == "POST":
+        start_date = request.form.get("start_date")
+        end_date = request.form.get("end_date")
+        if start_date is not None and end_date is not None:
+            query = f"""
+
+                 select D.Attraction as sources,avg(D.Revenue) as average_revenue,sum(D.participation) as Total_participation
+                 from(
+                 SELECT za.Z_ID as show_id,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue,ret.adult_tickets_sold+ret.sr_citizen_tickets_sold+ret.children_tickets_sold as participation
+                 FROM  zoo_admissions za,revenue_events_tickets ret
+                 where za.Z_ID=ret.Rev_id and ret.show_Date between'{start_date}' and '{end_date}'
+                 union
+
+                 SELECT ash.A_ID as show_id,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue,ret.adult_tickets_sold+ret.sr_citizen_tickets_sold+ret.children_tickets_sold as participation
+                 FROM  animal_show ash,revenue_events_tickets ret
+                 where ash.A_ID=ret.Rev_id and ret.show_Date between '{start_date}' and '{end_date}'
+
+                 union
+
+                 SELECT con.C_ID as show_id,con.product AS Attraction,ret.show_Date as show_date, con.price*ret.adult_tickets_sold + con.price*ret.sr_citizen_tickets_sold + con.price*ret.children_tickets_sold AS Revenue,ret.adult_tickets_sold+ret.sr_citizen_tickets_sold+ret.children_tickets_sold as participation
+                 FROM  concession con,revenue_events_tickets ret
+                 where con.C_ID=ret.Rev_id and ret.show_Date between '{start_date}' and '{end_date}'
+
+
+
+                 ) as D
+                group by D.Attraction;
+
+
+
+               """
+            result = execute_query(query)
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+            return render_template("average_revenue.html", data=data)
+
+
+@app.route("/add_show", methods=["GET", "POST"])
+def add_show():
+    if request.method == "POST":
+        rev_id = request.form.get("rev_id")
+        show_Date = request.form.get("show_Date")
+        show_time = request.form.get("show_time")
+        adult_tickets_sold = request.form.get("adult_tickets_sold")
+        children_tickets_sold = request.form.get("children_tickets_sold")
+        sr_citizen_tickets_sold = request.form.get("sr_citizen_tickets_sold")
+        if rev_id is not None and show_Date is not None and show_time is not None and adult_tickets_sold is not None and children_tickets_sold is not None and sr_citizen_tickets_sold is not None:
+            params = {"Rev_id": rev_id, "show_Date": show_Date, "show_time": show_time,
+                      "adult_tickets_sold": adult_tickets_sold, "children_tickets_sold": children_tickets_sold,
+                      "sr_citizen_tickets_sold": sr_citizen_tickets_sold}
+            query = f"""INSERT INTO revenue_events_tickets (Rev_id,show_Date,show_time, adult_tickets_sold,
+            children_tickets_sold,sr_citizen_tickets_sold) VALUES (:Rev_id, :show_Date, :show_time, :adult_tickets_sold,
+            :children_tickets_sold, :sr_citizen_tickets_sold);  """
+
+            execute_query(query,params)
+            return redirect(url_for('view_show'))
+    return render_template("add_completed_show.html")
+
+@app.route("/view_show",methods=["GET","POST"])
+def view_show():
+    query = "SELECT * FROM revenue_events_tickets"
+    result = execute_query(query)
+    rows = result.fetchall()
+    column_names = result.keys()
+    data = [dict(zip(column_names, row)) for row in rows]
+    return render_template("view_completed_shows.html",data=data)
+
 
 
 if __name__ == '__main__':

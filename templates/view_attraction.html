@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h2 class="view_title ">Animal shows</h2>
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
+  {% for  animal_show  in data %}
+    <tr>
+          <td>{{ animal_show.A_ID }}</td>
+          <td>{{ animal_show.show_name }}</td>
+          <td>{{ animal_show.senior_price }}</td>
+          <td>{{ animal_show.adult_price }}</td>
+          <td>{{ animal_show.children_price }}</td>
+
+
+
+    </tr>
+
+  {% endfor %}
+</table>
+
+<h2 class="view_title"> Zoo admissions</h2>
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data2[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
+  {% for zoo_admission  in data2 %}
+    <tr>
+          <td>{{ zoo_admission.Z_ID }}</td>
+          <td>{{ zoo_admission.show_name }}</td>
+          <td>{{ zoo_admission.senior_price }}</td>
+          <td>{{ zoo_admission.adult_price }}</td>
+          <td>{{ zoo_admission.children_price }}</td>
+
+    </tr>
+
+  {% endfor %}
+</table>
+
+
+{% endblock %}
