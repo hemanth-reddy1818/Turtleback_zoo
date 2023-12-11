@@ -96,22 +96,7 @@
 
         </div>
 
-        <div class="attraction box">
-            <h3 class="asset-title"> Top three Attractions</h3>
-           <form action="{{ url_for('average_revenue') }}" method="post">
-               <div class="inputfield">
-                 <label>Start date</label>
-                 <input type="date" name="start_date" class="input" required>
-               </div>
-               <div class="inputfield">
-                 <label>Enddate date</label>
-                 <input type="date" name="end_date" class="input" required>
-               </div>
-               <div class="inputfield">
-                <button type="submit" name="Add" class="btn">Generate</button>
-               </div>
-           </form>
-       </div>
+
 
 
 {% endblock %}

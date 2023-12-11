@@ -22,14 +22,14 @@ DROP TABLE IF EXISTS hourly_rate;
 
 -- Create the hourly_rate table
 CREATE TABLE hourly_rate (
-  Hourly_ID INT PRIMARY KEY NOT NULL,
+  Hourly_ID INT PRIMARY KEY NOT NULL ,
   rate INT NULL
 );
 
 
 
 CREATE TABLE Building (
-  Building_ID INT PRIMARY KEY NOT NULL,
+  Building_ID INT PRIMARY KEY NOT NULL auto_increment,
   building_name VARCHAR(50) NULL,
   b_type VARCHAR(20) NULL
 );
@@ -43,7 +43,7 @@ CREATE TABLE Revenue_types (
 );
 
 CREATE TABLE zoo_admissions  (
-  Z_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  Z_ID INT PRIMARY KEY NOT NULL,
   show_name Varchar(50) NULL,
   senior_price INT NULL,
   adult_price INT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE Species (
   
 );
 CREATE TABLE animal_show(
-  A_ID INT PRIMARY KEY NOT NULL  AUTO_INCREMENT,
+  A_ID INT PRIMARY KEY NOT NULL ,
   show_name varchar(50) NULL,
   senior_price INT NULL,
   adult_price INT NULL,
@@ -168,65 +168,105 @@ INSERT INTO hourly_rate (Hourly_ID, rate) VALUES
 
 
 -- Insert into Building
+-- Insert into Building
 INSERT INTO Building (Building_ID, building_name, b_type) VALUES
-(1, 'Main Entrance', 'Entrance'),
-(2, 'Safari Zone', 'Exhibit'),
-(3, 'Food Court', 'Service'),
-(4, 'Aviary', 'Exhibit'),
-(5, 'Aquarium', 'Exhibit'),
-(6, 'Gift Shop', 'Service'),
-(7, 'Amphitheater', 'Event'),
-(8, 'Reptile House', 'Exhibit'),
-(9, 'Insectarium', 'Exhibit'),
-(10, 'Rodent House', 'Exhibit');
+(1, 'Main Entrance', 'Attraction'),
+(2, 'Safari Zone', 'Attraction'),
+(3, 'Food Court', 'Concession Stand'),
+(4, 'Aviary', 'Attraction'),
+(5, 'Aquarium', 'Attraction'),
+(6, 'Gift Shop', 'Concession Stand'),
+(7, 'Amphitheater', 'Attraction'),
+(8, 'Reptile House', 'Animal Shelter'),
+(9, 'Insectarium', 'Animal Shelter'),
+(10, 'Rodent House', 'Animal Shelter'),
+(11, 'Playground Area', 'Attraction'),
+(12, 'Botanical Garden', 'Attraction'),
+(13, 'Cafeteria', 'Concession Stand'),
+(14, 'Butterfly House', 'Attraction'),
+(15, 'Observation Deck', 'Attraction'),
+(16, 'Penguin Enclosure', 'Animal Shelter'),
+(17, 'Interactive Zone', 'Concession Stand'),
+(18, 'Mammal Nursery', 'Animal Shelter'),
+(19, 'Education Center', 'Concession Stand'),
+(20, 'Picnic Area', 'Attraction');
 
+-- Insert into Revenue_types
 -- Insert into Revenue_types
 INSERT INTO Revenue_types (Revenue_ID, r_type, B_ID) VALUES
 -- Rows for 'zoo_admissions'
 (1, 'zoo_admissions', 1),
 (2, 'zoo_admissions', 2),
-(3, 'zoo_admissions', 3),
-(4, 'zoo_admissions', 4),
-(5, 'zoo_admissions', 5),
-(6, 'zoo_admissions', 6),
-(7, 'zoo_admissions', 7),
-(8, 'zoo_admissions', 8),
-(9, 'zoo_admissions', 9),
-(10, 'zoo_admissions', 10),
-(31, 'zoo_admissions', 10),
+(3, 'zoo_admissions', 4),
+(4, 'zoo_admissions', 5),
+(5, 'zoo_admissions', 7),
+(6, 'zoo_admissions', 11),
+(7, 'zoo_admissions', 12),
+(8, 'zoo_admissions', 14),
+(9, 'zoo_admissions', 15),
+(10, 'zoo_admissions', 3),
+(31, 'zoo_admissions', 17),
 
 -- Rows for 'animal_show'
 (11, 'animal_show', 1),
 (12, 'animal_show', 2),
-(13, 'animal_show', 3),
-(14, 'animal_show', 4),
-(15, 'animal_show', 5),
-(16, 'animal_show', 6),
-(17, 'animal_show', 7),
-(18, 'animal_show', 8),
-(19, 'animal_show', 9),
-(20, 'animal_show', 10),
-(32, 'animal_show', 10),
+(13, 'animal_show', 4),
+(14, 'animal_show', 5),
+(15, 'animal_show', 7),
+(16, 'animal_show', 11),
+(17, 'animal_show', 12),
+(18, 'animal_show', 14),
+(19, 'animal_show', 15),
+(20, 'animal_show', 3),
+(32, 'animal_show', 17),
 
 -- Rows for 'concession'
-(21, 'concession', 1),
-(22, 'concession', 2),
-(23, 'concession', 3),
-(24, 'concession', 4),
-(25, 'concession', 5),
+(21, 'concession', 3),
+(22, 'concession', 6),
+(23, 'concession', 13),
+(24, 'concession', 17),
+(25, 'concession', 3),
 (26, 'concession', 6),
-(27, 'concession', 7),
-(28, 'concession', 8),
-(29, 'concession', 9),
-(30, 'concession', 10);
-
+(27, 'concession', 13),
+(28, 'concession', 17),
+(29, 'concession', 3),
+(30, 'concession', 6),
+-- Additional rows for each type and B_ID
+(33, 'zoo_admissions', 1),
+(34, 'zoo_admissions', 2),
+(35, 'zoo_admissions', 4),
+(36, 'zoo_admissions', 5),
+(37, 'zoo_admissions', 7),
+(38, 'zoo_admissions', 11),
+(39, 'zoo_admissions', 12),
+(40, 'zoo_admissions', 14),
+(41, 'zoo_admissions', 15),
+(42, 'zoo_admissions', 3),
+(43, 'animal_show', 1),
+(44, 'animal_show', 2),
+(45, 'animal_show', 4),
+(46, 'animal_show', 5),
+(47, 'animal_show', 7),
+(48, 'animal_show', 11),
+(49, 'animal_show', 12),
+(50, 'animal_show', 14),
+(51, 'animal_show', 15),
+(52, 'animal_show', 3),
+(53, 'concession', 13),
+(54, 'concession', 17),
+(55, 'concession', 3),
+(56, 'concession', 6),
+(57, 'concession', 13),
+(58, 'concession', 17),
+(59, 'concession', 3),
+(60, 'concession', 6),
+(61, 'concession', 13),
+(62, 'concession', 17);
 
 
 
 -- Insert into zoo_admissions
--- Insert data into zoo_admissions table for 'zoo_admissions' rows
 -- Insert into zoo_admissions
--- Insert data into zoo_admissions table for 'zoo_admissions' rows with different prices and show_name
 INSERT INTO zoo_admissions (Z_ID, show_name, senior_price, adult_price, children_price)
 VALUES
 (1, 'Lion Encounter', 15, 25, 10),
@@ -239,24 +279,45 @@ VALUES
 (8, 'Butterfly Bliss', 22, 32, 17),
 (9, 'Reptile Rendezvous', 23, 33, 18),
 (10, 'Elephant Extravaganza', 24, 34, 19),
-(31, 'Kangaroo Kingdom', 25, 35, 20);
-
+(31, 'Kangaroo Kingdom', 25, 35, 20),
+(33, 'Giraffe Gala', 26, 36, 21),
+(34, 'Zebra Zenith', 27, 37, 22),
+(35, 'Hippopotamus Happening', 28, 38, 23),
+(36, 'Cheetah Celebration', 29, 39, 24),
+(37, 'Gorilla Gathering', 30, 40, 25),
+(38, 'Panda Parade', 31, 41, 26),
+(39, 'Koala Komotion', 32, 42, 27),
+(40, 'Seal Soiree', 33, 43, 28),
+(41, 'Dolphin Delight', 34, 44, 29),
+(42, 'Polar Bear Party', 35, 45, 30);
 
 
 -- Insert into concession
 -- Insert data into concession table for 'concession' rows
-INSERT INTO concession (C_ID, product,price)
+-- Insert into concession
+INSERT INTO concession (C_ID, product, price)
 VALUES
-(21, 'Popcorn',20),
-(22, 'Soda',15),
-(23, 'Hot Dog',12),
-(24, 'Candy',5),
-(25, 'Nachos',7),
-(26, 'Pretzel',15),
-(27, 'Ice Cream',30),
-(28, 'Chips',10),
-(29, 'Pizza',40),
-(30, 'Cotton Candy',8);
+(21, 'Popcorn', 20),
+(22, 'Soda', 15),
+(23, 'Hot Dog', 12),
+(24, 'Candy', 5),
+(25, 'Nachos', 7),
+(26, 'Pretzel', 15),
+(27, 'Ice Cream', 30),
+(28, 'Chips', 10),
+(29, 'Pizza', 40),
+(30, 'Cotton Candy', 8),
+(53, 'Burger', 25),
+(54, 'Fries', 18),
+(55, 'Soft Drink', 12),
+(56, 'Caramel Apple', 6),
+(57, 'Cheese Nachos', 9),
+(58, 'Brownie Sundae', 28),
+(59, 'Fruit Cup', 10),
+(60, 'Chicken Tenders', 35),
+(61, 'Slushie', 14),
+(62, 'Chocolate Bar', 4);
+
 
 
 --- Insert into EMPLOYEE
@@ -314,6 +375,7 @@ INSERT INTO Species (Species_name, food_cost,emp_id) VALUES
 -- Insert data into animal_show table for 'animal_show' rows
 -- Insert data into animal_show table for 'animal_show' rows
 -- Insert data into animal_show table for 'animal_show' rows with show_name
+-- Insert into animal_show
 INSERT INTO animal_show (A_ID, show_name, senior_price, adult_price, children_price)
 VALUES
 (11, 'Lion Show', 30, 15, 50),
@@ -326,37 +388,66 @@ VALUES
 (18, 'Kangaroo Show', 37, 22, 57),
 (19, 'Panda Show', 38, 23, 58),
 (20, 'Bear Show', 39, 24, 59),
-(32, 'Dolphin Show', 40, 25, 60);
+(32, 'Dolphin Show', 40, 25, 60),
+(43, 'Zebra Show', 41, 26, 61),
+(44, 'Hippopotamus Show', 42, 27, 62),
+(45, 'Cheetah Show', 43, 28, 63),
+(46, 'Gorilla Show', 44, 29, 64),
+(47, 'Penguin Encounter', 45, 30, 65),
+(48, 'Parrot Show', 46, 31, 66),
+(49, 'Koala Show', 47, 32, 67),
+(50, 'Snake Show', 48, 33, 68),
+(51, 'Crocodile Show', 49, 34, 69),
+(52, 'Jungle Adventure', 50, 35, 70);
 
 
 
 -- Insert into enclosure
 INSERT INTO enclosure (Enc_ID, B_id, sqr_ft) VALUES
 (1, 2, 1000),
-(2, 3, 800),
-(3, 1, 1200),
-(4, 4, 700),
-(5, 5, 1500),
-(6, 6, 600),
-(7, 7, 2000),
-(8, 8, 1000),
-(9, 9, 800),
-(10, 10, 1200);
+(2, 4, 800),
+(3, 5, 1200),
+(4, 8, 700),
+(5, 9, 1500),
+(6, 10, 600),
+(7, 2, 2000),
+(8, 4, 1000),
+(9, 5, 800),
+(10, 8, 1200);
 
 
--- Insert into Animal
 -- Insert into Animal
 INSERT INTO Animal (Animal_ID, a_status, birth_year, animal_name, sp_name, En_id, b_id) VALUES
 (1, 'Healthy', 2015, 'Lion', 'Mammal', 1, 2),
-(2, 'Maternity Leave', 2018, 'Elephant', 'Mammal', 2, 3),
-(3, 'Injured', 2017, 'Giraffe', 'Mammal', 3, 1),
-(4, 'Healthy', 2016, 'Tiger', 'Mammal', 4, 4),
-(5, 'Injured', 2019, 'Shark', 'Fish', 5, 5),
-(6, 'Healthy', 2020, 'Eagle', 'Bird', 6, 6),
-(7, 'Died', 2014, 'Cobra', 'Reptile', 7, 7),  -- Corrected the b_id for Cobra
-(8, 'Healthy', 2013, 'Octopus', 'Mollusk', 8, 8),  -- Corrected the b_id for Octopus
-(9, 'Maternity Leave', 2015, 'Crab', 'Crustacean', 9, 9),  -- Corrected the b_id for Crab
-(10, 'Died', 2017, 'Panther', 'Mammal', 10, 10);
+(2, 'Maternity Leave', 2018, 'Elephant', 'Mammal', 2, 4),
+(3, 'Injured', 2017, 'Giraffe', 'Mammal', 3, 5),
+(4, 'Healthy', 2016, 'Tiger', 'Mammal', 4, 8),
+(5, 'Injured', 2019, 'Shark', 'Fish', 5, 9),
+(6, 'Healthy', 2020, 'Eagle', 'Bird', 6, 10),
+(7, 'Died', 2014, 'Cobra', 'Reptile', 7, 2),
+(8, 'Healthy', 2013, 'Octopus', 'Mollusk', 8, 4),
+(9, 'Maternity Leave', 2015, 'Crab', 'Crustacean', 9, 5),
+(10, 'Died', 2017, 'Panther', 'Mammal', 10, 8),
+(11, 'Healthy', 2015, 'Lion', 'Mammal', 1, 2),
+(12, 'Maternity Leave', 2018, 'Elephant', 'Mammal', 2, 4),
+(13, 'Injured', 2017, 'Giraffe', 'Mammal', 3, 5),
+(14, 'Healthy', 2016, 'Tiger', 'Mammal', 4, 8),
+(15, 'Injured', 2019, 'Shark', 'Fish', 5, 9),
+(16, 'Healthy', 2020, 'Eagle', 'Bird', 6, 10),
+(17, 'Died', 2014, 'Cobra', 'Reptile', 7, 2),
+(18, 'Healthy', 2013, 'Octopus', 'Mollusk', 8, 4),
+(19, 'Maternity Leave', 2015, 'Crab', 'Crustacean', 9, 5),
+(20, 'Died', 2017, 'Panther', 'Mammal', 10, 8),
+(21, 'Healthy', 2015, 'Lion', 'Mammal', 1, 2),
+(22, 'Maternity Leave', 2018, 'Elephant', 'Mammal', 2, 4),
+(23, 'Injured', 2017, 'Giraffe', 'Mammal', 3, 5),
+(24, 'Healthy', 2016, 'Tiger', 'Mammal', 4, 8),
+(25, 'Injured', 2019, 'Shark', 'Fish', 5, 9),
+(26, 'Healthy', 2020, 'Eagle', 'Bird', 6, 10),
+(27, 'Died', 2014, 'Cobra', 'Reptile', 7, 2),
+(28, 'Healthy', 2013, 'Octopus', 'Mollusk', 8, 4),
+(29, 'Maternity Leave', 2015, 'Crab', 'Crustacean', 9, 5),
+(30, 'Died', 2017, 'Panther', 'Mammal', 10, 8);
 
 
 -- Insert into participates_in
@@ -378,6 +469,8 @@ INSERT INTO participates_in (ani_id, sp_name, required) VALUES
 
 -- Insert into Revenue_Events_tickets
 -- Insert into Revenue_Events_tickets
+-- Insert into Revenue_Events_tickets
+-- Insert into Revenue_Events_tickets
 INSERT INTO Revenue_Events_tickets (Rev_id, show_Date, show_time, adult_tickets_sold, children_tickets_sold, sr_citizen_tickets_sold)
 VALUES
 -- Rows for 'zoo_admissions'
@@ -392,8 +485,19 @@ VALUES
 (9, '2023-09-12', '14:00:00', 60, 40, 20),
 (10, '2023-10-05', '16:30:00', 180, 120, 70),
 (31, '2023-01-01', '12:00:00', 50, 30, 20),
+(33, '2023-02-15', '16:00:00', 80, 50, 30),
+(34, '2023-03-01', '18:30:00', 120, 80, 40),
+(35, '2023-04-15', '14:00:00', 90, 60, 30),
+(36, '2023-05-05', '12:30:00', 110, 70, 35),
+(37, '2023-06-20', '20:00:00', 160, 110, 60),
+(38, '2023-07-10', '17:30:00', 140, 95, 45),
+(39, '2023-08-01', '13:00:00', 70, 45, 25),
+(40, '2023-09-25', '15:30:00', 200, 140, 80),
+(41, '2023-10-15', '18:00:00', 130, 85, 40),
+(42, '2023-11-05', '16:30:00', 170, 110, 60),
 
 -- Rows for 'animal_show'
+-- Insert into Revenue_Events_tickets
 (11, '2023-01-01', '12:00:00', 30, 20, 10),
 (12, '2023-02-15', '14:30:00', 40, 30, 15),
 (13, '2023-03-30', '10:00:00', 25, 15, 10),
@@ -405,8 +509,19 @@ VALUES
 (19, '2023-09-12', '14:00:00', 30, 20, 10),
 (20, '2023-10-05', '16:30:00', 90, 70, 40),
 (32, '2023-10-01', '16:30:00', 90, 70, 40),
+(43, '2023-11-15', '13:00:00', 35, 25, 15),
+(44, '2023-12-01', '15:30:00', 55, 45, 20),
+(45, '2023-12-15', '12:00:00', 40, 30, 15),
+(46, '2023-01-10', '17:00:00', 70, 60, 30),
+(47, '2023-02-05', '14:30:00', 80, 70, 40),
+(48, '2023-03-20', '18:00:00', 55, 45, 20),
+(49, '2023-04-10', '16:30:00', 75, 60, 30),
+(50, '2023-05-01', '12:00:00', 60, 50, 25),
+(51, '2023-06-15', '19:30:00', 100, 80, 40),
+(52, '2023-07-05', '17:00:00', 85, 70, 35),
 
 -- Rows for 'concession'
+-- Insert into Revenue_Events_tickets
 (21, '2023-01-01', '12:00:00', 100, 50, 30),
 (22, '2023-01-01', '14:30:00', 120, 60, 40),
 (23, '2023-03-30', '10:00:00', 80, 40, 20),
@@ -416,8 +531,17 @@ VALUES
 (27, '2023-07-15', '19:00:00', 200, 120, 80),
 (28, '2023-08-25', '17:30:00', 170, 90, 60),
 (29, '2023-09-12', '14:00:00', 90, 50, 30),
-(30, '2023-10-05', '16:30:00', 220, 150, 100);
--- Add more rows as needed.
+(30, '2023-10-05', '16:30:00', 220, 150, 100),
+(53, '2023-11-15', '13:00:00', 110, 80, 50),
+(54, '2023-12-01', '15:30:00', 130, 90, 60),
+(55, '2023-12-15', '12:00:00', 100, 60, 40),
+(56, '2024-01-10', '17:00:00', 150, 100, 70),
+(57, '2024-02-05', '14:30:00', 170, 120, 80),
+(58, '2024-03-20', '18:00:00', 130, 80, 50),
+(59, '2024-04-10', '16:30:00', 160, 110, 70),
+(60, '2024-05-01', '12:00:00', 140, 90, 60),
+(61, '2024-06-15', '19:30:00', 180, 130, 90),
+(62, '2024-07-05', '17:00:00', 160, 110, 70);
 
 
 -- Insert into cares_for

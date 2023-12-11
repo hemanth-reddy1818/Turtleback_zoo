@@ -2,6 +2,7 @@
 
 
 {% block content %}
+{% if data %}
 
 <h2>Daily Reports</h2>
 <table class="table table-bordered table-hover">
@@ -31,7 +32,10 @@
     </tr>
     </tfoot>
 </table>
+{% else %}
+<h1>No events on selected date</h1>
 
+{% endif %}
 
 
 

@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 import pymysql, cryptography
-from datetime import datetime
 
 pymysql.install_as_MySQLdb()
 
@@ -163,8 +162,13 @@ def update_employee():
           Employee_ID = {emp['Employee_ID']};
         """
 
-        execute_query(update_query)
-        return redirect(url_for('employee'))
+        try:
+            execute_query(update_query)
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+            data = e.args[0]
+            return render_template("error.html", data=data)
+        else:
+            return redirect(url_for('employee'))
 
     return render_template("update_employee.html")
 
@@ -183,16 +187,21 @@ def view_building():
 @app.route("/asset/building/add", methods=["GET", "POST"])
 def add_building():
     if request.method == "POST":
-        Building_ID = request.form.get("building_id")
+
         building_name = request.form.get("building_name")
         b_type = request.form.get("building_type")
-        if Building_ID is not None and building_name is not None and b_type is not None:
+        if building_name is not None and b_type is not None:
             # Use parameterized query to avoid SQL injection
-            query = "INSERT INTO Building (Building_ID, building_name, b_type) VALUES (" \
-                    ":Building_ID, :building_name, :building_type  ); "
-            params = {"Building_ID": Building_ID, "building_name": building_name, "building_type": b_type}
-            execute_query(query, params)
-            return redirect(url_for('view_building'))
+            query = "INSERT INTO Building ( building_name, b_type) VALUES (" \
+                    ":building_name, :building_type  ); "
+            params = { "building_name": building_name, "building_type": b_type}
+            try:
+                execute_query(query, params)
+            except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+                data = e.args[0]
+                return render_template("error.html", data=data)
+            else:
+                return redirect(url_for('view_building'))
     return render_template("add_building.html")
 
 
@@ -225,8 +234,13 @@ def update_building():
                  Building_ID = {build['Building_ID']};
                """
 
-        execute_query(update_query)
-        return redirect(url_for('view_building'))
+        try:
+            execute_query(query)
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+            data = e.args[0]
+            return render_template("error.html", data=data)
+        else:
+            return redirect(url_for('view_building'))
     return render_template("update_building.html")
 
 
@@ -250,9 +264,13 @@ def add_rate():
             query = "INSERT INTO hourly_rate(Hourly_ID, rate) VALUES (" \
                     ":Hourly_ID, :rate  ); "
             params = {"Hourly_ID": Hourly_id, "rate": rate}
-            execute_query(query, params)
-
-            return redirect(url_for('view_rate'))
+            try:
+                execute_query(query, params)
+            except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+                data = e.args[0]
+                return render_template("error.html", data=data)
+            else:
+                return redirect(url_for('view_rate'))
     return render_template("add_hourly_rates.html")
 
 
@@ -284,8 +302,13 @@ def update_rate():
                        Hourly_ID = {rate['Hourly_ID']};
                      """
 
-        execute_query(update_query)
-        return redirect(url_for('view_rate'))
+        try:
+            execute_query(update_query)
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+            data = e.args[0]
+            return render_template("error.html", data=data)
+        else:
+            return redirect(url_for('view_rate'))
     return render_template("update_hourly_rate.html")
 
 
@@ -374,9 +397,13 @@ def update_animal():
                               Animal_ID = {animal['Animal_ID']};
                               
                             """
-
-        execute_query(update_query)
-        return redirect(url_for('view_animal'))
+        try:
+            execute_query(query)
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+            data = e.args[0]
+            return render_template("error.html", data=data)
+        else:
+            return redirect(url_for('view_animal'))
     return render_template("update_animal.html")
 
 
@@ -428,12 +455,17 @@ def add_attraction():
                         "); "
             else:
                 query = "INSERT INTO animal_show (A_ID,show_name,senior_price, adult_price,children_price" \
-                        f") VALUES ({data['Revenue_ID']}," \
+                        f") VALUES ({data[0]['Revenue_ID']}," \
                         ":show_name,:senior_price, :adult_price, :children_price " \
                         "); "
 
-            execute_query(query, params)
-            return redirect(url_for('view_attraction'))
+            try:
+                execute_query(query, params)
+            except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+                data = e.args[0]
+                return render_template("error.html", data=data)
+            else:
+                return redirect(url_for('view_attraction'))
 
     return render_template("add_attraction.html")
 
@@ -627,12 +659,12 @@ def top_three():
         if start_date is not None and end_date is not None:
             query = f"""
             
-               SELECT za.Z_ID as show_id,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
+               SELECT za.Z_ID as show_id,za.show_name as show_name,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
                FROM  zoo_admissions za,revenue_events_tickets ret
             where za.Z_ID=ret.Rev_id and ret.show_Date between '{start_date}' and '{end_date}'
                union
 
-                SELECT ash.A_ID as show_id,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
+                SELECT ash.A_ID as show_id,ash.show_name as show_name,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
                 FROM  animal_show ash,revenue_events_tickets ret
                 where ash.A_ID=ret.Rev_id and ret.show_Date between '{start_date}' and '{end_date}'
 
@@ -678,12 +710,12 @@ def top_five():
             query = f"""
             
         
-        SELECT za.Z_ID as show_id,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
+        SELECT za.Z_ID as show_id,za.show_name as show_name,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
         FROM  zoo_admissions za,revenue_events_tickets ret
         where za.Z_ID=ret.Rev_id and Month(ret.show_Date)={month_number[f'{month.lower()}']}
         union
 
-        SELECT ash.A_ID as show_id,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
+        SELECT ash.A_ID as show_id,ash.show_name as show_name,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
         FROM  animal_show ash,revenue_events_tickets ret
         where ash.A_ID=ret.Rev_id and Month(ret.show_Date)={month_number[f'{month.lower()}']}
 
@@ -767,19 +799,33 @@ def add_show():
             children_tickets_sold,sr_citizen_tickets_sold) VALUES (:Rev_id, :show_Date, :show_time, :adult_tickets_sold,
             :children_tickets_sold, :sr_citizen_tickets_sold);  """
 
-            execute_query(query,params)
+            execute_query(query, params)
             return redirect(url_for('view_show'))
     return render_template("add_completed_show.html")
 
-@app.route("/view_show",methods=["GET","POST"])
+
+@app.route("/view_show", methods=["GET", "POST"])
 def view_show():
-    query = "SELECT * FROM revenue_events_tickets"
+    query = """
+    select ret.Rev_id as Revenue_id,za.show_name,'zoo_admission' as show_type,ret.show_Date,ret.show_time,ret.adult_tickets_sold,ret.children_tickets_sold,ret.sr_citizen_tickets_sold from
+    revenue_events_tickets ret ,zoo_admissions za
+    where za.Z_ID=ret.Rev_id
+    union
+    select ret.Rev_id as Revenue_id,ash.show_name,'animal_show' as show_type,ret.show_Date,ret.show_time,ret.adult_tickets_sold,ret.children_tickets_sold,ret.sr_citizen_tickets_sold from
+    revenue_events_tickets ret ,animal_show ash
+    where ash.A_ID=ret.Rev_id
+    union
+    select ret.Rev_id as Revenue_id,con.product,'concession' as show_type,ret.show_Date,ret.show_time,ret.adult_tickets_sold,ret.children_tickets_sold,ret.sr_citizen_tickets_sold from
+    revenue_events_tickets ret ,concession con
+    where con.C_ID=ret.Rev_id
+    order by Revenue_id;
+
+    """
     result = execute_query(query)
     rows = result.fetchall()
     column_names = result.keys()
     data = [dict(zip(column_names, row)) for row in rows]
-    return render_template("view_completed_shows.html",data=data)
-
+    return render_template("view_completed_shows.html", data=data)
 
 
 if __name__ == '__main__':
