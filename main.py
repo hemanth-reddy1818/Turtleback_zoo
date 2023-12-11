@@ -704,22 +704,21 @@ def top_five():
             "november": 11,
             "december": 12
         }
-        print(month_number)
+        print(month_number[f'{month.lower()}'])
 
         if month is not None:
             query = f"""
             
-        
-        select t.show_Date,sum(t.Revenue) as Total_revenue from
+     select t.show_Date,sum(t.Revenue) as Total_revenue from
         (
         SELECT
         'Zoo Admissions' AS Event_Type,
-         za.Z_ID AS Revenue_id,
-         za.show_name as name,
-         ret.show_Date as show_Date,
+        za.Z_ID AS Revenue_id,
+        za.show_name as name,
+        ret.show_Date as show_Date,
         ((za.senior_price * ret.sr_citizen_tickets_sold) +
-         (za.adult_price * ret.adult_tickets_sold) +
-         (za.children_price * ret.children_tickets_sold)) AS Revenue
+        (za.adult_price * ret.adult_tickets_sold) +
+        (za.children_price * ret.children_tickets_sold)) AS Revenue
         FROM
         zoo_admissions za, revenue_events_tickets ret
         WHERE
@@ -740,13 +739,12 @@ def top_five():
         FROM
         animal_show ash, revenue_events_tickets ret
         WHERE
-        ash.A_ID = ret.Rev_id AND {month_number[f'{month.lower()}']}
-        
+        ash.A_ID = ret.Rev_id AND month(ret.show_Date) ={month_number[f'{month.lower()}']}
         UNION
         
         -- Select Concessions data
         SELECT
-            
+                        
         'concession' AS Event_Type,
         cs.C_ID AS Revenue_id,
         cs.product as name,
@@ -757,11 +755,12 @@ def top_five():
         FROM
         concession cs, revenue_events_tickets ret
         WHERE
-        cs.C_ID = ret.Rev_id AND {month_number[f'{month.lower()}']}
+        cs.C_ID = ret.Rev_id AND month(ret.show_Date) ={month_number[f'{month.lower()}']}
         )as t
         group by t.show_Date
         order by Total_revenue desc
         limit 5;
+        
         
 
 
