@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% if data %}
+
+<h2 class="view_title">Daily Concession Reports</h2>
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+     <tr>
+         {% for key in data[0].keys() %}
+           <th scope="col">{{ key }}</th>
+         {% endfor %}
+     </tr>
+   </thead>
+  {% for  type  in data %}
+    <tr>
+
+          <td>{{ type.Revenue_id }}</td>
+          <td>{{ type.name}}</td>
+          <td>{{ type.Revenue}}</td>
+    </tr>
+
+  {% endfor %}
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+
+      </tr>
+    <tr>
+
+        <td></td>
+        <td style="font-weight:600">Total:</td>
+        <td>{{ total }}</td>
+    </tr>
+    </tfoot>
+</table>
+{% else %}
+<h1>No events on selected date</h1>
+
+{% endif %}
+
+
+
+{% endblock %}

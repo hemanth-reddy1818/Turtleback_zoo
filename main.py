@@ -710,17 +710,63 @@ def top_five():
             query = f"""
             
         
-        SELECT za.Z_ID as show_id,za.show_name as show_name,'zoo admissions' AS Attraction,ret.show_Date as show_date, za.Adult_price*ret.adult_tickets_sold + za.Senior_price*ret.sr_citizen_tickets_sold + za.children_price*ret.children_tickets_sold AS Revenue
-        FROM  zoo_admissions za,revenue_events_tickets ret
-        where za.Z_ID=ret.Rev_id and Month(ret.show_Date)={month_number[f'{month.lower()}']}
-        union
+        select t.show_Date,sum(t.Revenue) as Total_revenue from
+        (
+        SELECT
+        'Zoo Admissions' AS Event_Type,
+         za.Z_ID AS Revenue_id,
+         za.show_name as name,
+         ret.show_Date as show_Date,
+        ((za.senior_price * ret.sr_citizen_tickets_sold) +
+         (za.adult_price * ret.adult_tickets_sold) +
+         (za.children_price * ret.children_tickets_sold)) AS Revenue
+        FROM
+        zoo_admissions za, revenue_events_tickets ret
+        WHERE
+        za.Z_ID = ret.Rev_id AND month(ret.show_Date) ={month_number[f'{month.lower()}']}
+        
+        
+        UNION
+        
+        -- Select Animal Shows data
+        SELECT
+        'Animal shows' AS Event_Type,
+        ash.A_ID AS Revenue_id,
+        ash.show_name as name,
+        ret.show_Date as show_Date,
+        ((ash.senior_price * ret.sr_citizen_tickets_sold) +
+        (ash.adult_price * ret.adult_tickets_sold) +
+        (ash.children_price * ret.children_tickets_sold)) AS Revenue
+        FROM
+        animal_show ash, revenue_events_tickets ret
+        WHERE
+        ash.A_ID = ret.Rev_id AND {month_number[f'{month.lower()}']}
+        
+        UNION
+        
+        -- Select Concessions data
+        SELECT
+            
+        'concession' AS Event_Type,
+        cs.C_ID AS Revenue_id,
+        cs.product as name,
+        ret.show_Date as show_Date,
+        ((cs.price * ret.sr_citizen_tickets_sold) +
+        (cs.price * ret.adult_tickets_sold) +
+        (cs.price * ret.children_tickets_sold)) AS Revenue
+        FROM
+        concession cs, revenue_events_tickets ret
+        WHERE
+        cs.C_ID = ret.Rev_id AND {month_number[f'{month.lower()}']}
+        )as t
+        group by t.show_Date
+        order by Total_revenue desc
+        limit 5;
+        
 
-        SELECT ash.A_ID as show_id,ash.show_name as show_name,'Animal show' AS Attraction,ret.show_Date as show_date, ash.Adult_price*ret.adult_tickets_sold + ash.Senior_price*ret.sr_citizen_tickets_sold + ash.children_price*ret.children_tickets_sold AS Revenue
-        FROM  animal_show ash,revenue_events_tickets ret
-        where ash.A_ID=ret.Rev_id and Month(ret.show_Date)={month_number[f'{month.lower()}']}
 
-        ORDER BY Revenue DESC
-        LIMIT 5;
+
+
 
 
             """
@@ -826,6 +872,114 @@ def view_show():
     column_names = result.keys()
     data = [dict(zip(column_names, row)) for row in rows]
     return render_template("view_completed_shows.html", data=data)
+
+@app.route("/daily_attraction_report",methods=["GET","POST"])
+def daily_attraction_report():
+    data = None
+
+    if request.method == "POST":
+        desired_date = request.form.get("desired_date")
+        if desired_date is not None:
+            # Use parameterized query to avoid SQL injection
+
+            query = f"""
+                   -- Select Zoo Admissions data
+                   SELECT
+                       'Zoo Admissions' AS Event_Type,
+                       za.Z_ID AS Revenue_id,
+                       za.show_name as name,
+                       ((za.senior_price * ret.sr_citizen_tickets_sold) +
+                        (za.adult_price * ret.adult_tickets_sold) +
+                        (za.children_price * ret.children_tickets_sold)) AS Revenue
+                   FROM
+                       zoo_admissions za, revenue_events_tickets ret
+                   WHERE
+                       za.Z_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                   UNION
+
+                   -- Select Animal Shows data
+                   SELECT
+                       'Animal shows' AS Event_Type,
+                       ash.A_ID AS Revenue_id,
+                       ash.show_name as name,
+                       ((ash.senior_price * ret.sr_citizen_tickets_sold) +
+                        (ash.adult_price * ret.adult_tickets_sold) +
+                        (ash.children_price * ret.children_tickets_sold)) AS Revenue
+                   FROM
+                       animal_show ash, revenue_events_tickets ret
+                   WHERE
+                       ash.A_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                 
+
+               
+               """
+
+            # Execute the query with the parameters
+            params = {"desired_date": desired_date}
+            # Execute the query
+            result = execute_query(query, params)
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+            total = 0
+
+            for event in data:
+                total += event["Revenue"]
+
+    return render_template("daily_attraction_report.html", data=data, total=total)
+
+@app.route("/daily_concession_report",methods=["POST","GET"])
+def daily_concession_report():
+    data = None
+
+    if request.method == "POST":
+        desired_date = request.form.get("desired_date")
+        if desired_date is not None:
+            # Use parameterized query to avoid SQL injection
+
+            query = f"""
+                      -- Select Zoo Admissions data
+                      SELECT
+                          
+                          con.C_ID AS Revenue_id,
+                          con.product as name,
+                          ((con.price * ret.sr_citizen_tickets_sold) +
+                           (con.price * ret.adult_tickets_sold) +
+                           (con.price * ret.children_tickets_sold)) AS Revenue
+                      FROM
+                          concession con, revenue_events_tickets ret
+                      WHERE
+                          con.C_ID = ret.Rev_id AND ret.show_Date = :desired_date
+
+                    
+
+
+
+                  """
+
+            # Execute the query with the parameters
+            params = {"desired_date": desired_date}
+            # Execute the query
+            result = execute_query(query, params)
+
+            # Fetch data and column names
+            rows = result.fetchall()
+            column_names = result.keys()
+
+            # Convert the result into a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+            total = 0
+
+            for event in data:
+                total += event["Revenue"]
+
+    return render_template("daily_concession_report.html", data=data, total=total)
 
 
 if __name__ == '__main__':

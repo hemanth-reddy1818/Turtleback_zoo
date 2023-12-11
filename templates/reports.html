@@ -115,4 +115,41 @@
            
        </div>
 
+            <div class=" wrapper">
+                <div class="title">
+                <h3 class="asset-title">Attraction Reports</h3>
+            </div>
+            <div class="daily_reports">
+                <form  method="post" action="{{url_for('daily_attraction_report') }}">
+                    <div class="form">
+                        <div class="inputfield">
+                        <input type="date" name="desired_date" class="input"  required>
+                    </div>
+                    <div class="inputfield">
+                        <button type="submit" name="Add" class="btn">Daily Report</button>
+                    </div>
+                    </div>
+                </form>
+                </div>
+
+            </div>
+           <div class=" wrapper">
+                <div class="title">
+                <h3 class="asset-title">Concession Reports</h3>
+            </div>
+            <div class="daily_reports">
+                <form  method="post" action="{{url_for('daily_concession_report') }}">
+                    <div class="form">
+                        <div class="inputfield">
+                        <input type="date" name="desired_date" class="input"  required>
+                    </div>
+                    <div class="inputfield">
+                        <button type="submit" name="Add" class="btn">Daily Report</button>
+                    </div>
+                    </div>
+                </form>
+                </div>
+
+            </div>
+
 {% endblock %}
