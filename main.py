@@ -164,7 +164,7 @@ def update_employee():
 
         try:
             execute_query(update_query)
-        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityErro, IndexError) as e:
             data = e.args[0]
             return render_template("error.html", data=data)
         else:
@@ -194,7 +194,7 @@ def add_building():
             # Use parameterized query to avoid SQL injection
             query = "INSERT INTO Building ( building_name, b_type) VALUES (" \
                     ":building_name, :building_type  ); "
-            params = { "building_name": building_name, "building_type": b_type}
+            params = {"building_name": building_name, "building_type": b_type}
             try:
                 execute_query(query, params)
             except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
@@ -235,8 +235,8 @@ def update_building():
                """
 
         try:
-            execute_query(query)
-        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
+            execute_query(update_query)
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError, IndexError) as e:
             data = e.args[0]
             return render_template("error.html", data=data)
         else:
@@ -398,7 +398,7 @@ def update_animal():
                               
                             """
         try:
-            execute_query(query)
+            execute_query(update_query)
         except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.IntegrityError) as e:
             data = e.args[0]
             return render_template("error.html", data=data)
@@ -872,7 +872,8 @@ def view_show():
     data = [dict(zip(column_names, row)) for row in rows]
     return render_template("view_completed_shows.html", data=data)
 
-@app.route("/daily_attraction_report",methods=["GET","POST"])
+
+@app.route("/daily_attraction_report", methods=["GET", "POST"])
 def daily_attraction_report():
     data = None
 
@@ -933,7 +934,8 @@ def daily_attraction_report():
 
     return render_template("daily_attraction_report.html", data=data, total=total)
 
-@app.route("/daily_concession_report",methods=["POST","GET"])
+
+@app.route("/daily_concession_report", methods=["POST", "GET"])
 def daily_concession_report():
     data = None
 
