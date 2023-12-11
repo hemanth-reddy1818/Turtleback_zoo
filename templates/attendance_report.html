@@ -4,7 +4,7 @@
 {% block content %}
 
 {% if data %}
-<h2>Daily Reports</h2>
+<h2 class="view_title">Daily Reports</h2>
 <table class="table table-bordered table-hover">
   <thead class="thead-dark">
      <tr>
@@ -20,9 +20,6 @@
           <td>{{ type.senior_citizens}}</td>
           <td>{{ type.adults }}</td>
           <td>{{ type.children }}</td>
-
-
-
     </tr>
 
   {% endfor %}

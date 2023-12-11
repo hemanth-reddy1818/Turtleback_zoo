@@ -5,33 +5,22 @@
 
       <div class="divide">
             <div class=" wrapper">
-            <div class="title">
-               <h3 class="asset-title">Reports</h3>
+                <div class="title">
+                <h3 class="asset-title">Reports</h3>
             </div>
-
             <div class="daily_reports">
-
-            <form  method="post" action="{{url_for('daily_report') }}">
-                <div class="form">
-                     <div class="inputfield">
-                      <input type="date" name="desired_date" class="input"  required>
-
-                </div>
-
-                <div class="inputfield">
-                     <button type="submit" name="Add" class="btn">Daily Report</button>
-                </div>
-                </div>
-
-
-            </form>
-
+                <form  method="post" action="{{url_for('daily_report') }}">
+                    <div class="form">
+                        <div class="inputfield">
+                        <input type="date" name="desired_date" class="input"  required>
+                    </div>
+                    <div class="inputfield">
+                        <button type="submit" name="Add" class="btn">Daily Report</button>
+                    </div>
+                    </div>
+                </form>
             </div>
-
-
-
-
-               <form  method="post" action="{{url_for('attendance_report') }}">
+            <form  method="post" action="{{url_for('attendance_report') }}">
                 <div class="form">
                      <div class="inputfield">
                       <input type="date" name="desired_date" class="input"  required>
@@ -43,35 +32,43 @@
                 </div>
                 </div>
             </form>
-
-       </div></div>
-
-        <div class="attraction box">
+            </div>
+       <div class="big-box additions">
+            <div class="divide">
+                <div class="attraction box">
             <h3 class="asset-title">Animal Reports</h3>
             <a href="{{ url_for('population_report') }} ">Population report</a>
             <a href="{{ url_for('employee_report') }}"> Employee report</a>
-
+                </div>
+            </div>
        </div>
+       </div>
+       
        <div class="attraction box">
             <h3 class="asset-title"> Top three Attractions</h3>
            <form action="{{ url_for('top_three') }}" method="post">
+            <div class="form">
                <div class="inputfield">
-                 <label>Start date</label>
+                 <label>Start Date</label>
                  <input type="date" name="start_date" class="input" required>
                </div>
                <div class="inputfield">
-                 <label>Enddate date</label>
+                 <label>End Date</label>
                  <input type="date" name="end_date" class="input" required>
                </div>
                <div class="inputfield">
                 <button type="submit" name="Add" class="btn">Generate</button>
                </div>
+            </div>
            </form>
        </div>
 
         <div class="attraction box">
             <h3 class="asset-title"> Top 5 Attractions</h3>
            <form action="{{ url_for('top_five') }}" method="post">
+            <div class="form">
+            <div class="inputfield">
+                <label>Month</label>
               <div class="custom_select">
                 <select id="month" name="month">
                     <option value="January">January</option>
@@ -88,15 +85,34 @@
                     <option value="December">December</option>
                 </select>
                </div>
-
+            </div>
                <div class="inputfield">
                 <button type="submit" name="Add" class="btn">Generate</button>
                </div>
+            </div>
            </form>
 
         </div>
 
 
-
+        <div class="attraction box">
+            <h3 class="asset-title">Average Revenue</h3>
+           <form action="{{ url_for('average_revenue') }}" method="post">
+            <div class="form">
+               <div class="inputfield">
+                 <label>Start Date</label>
+                 <input type="date" name="start_date" class="input" required>
+               </div>
+               <div class="inputfield">
+                 <label>End Date</label>
+                 <input type="date" name="end_date" class="input" required>
+               </div>
+               <div class="inputfield">
+                <button type="submit" name="Add" class="btn">Generate</button>
+               </div>
+            </div>
+           </form>
+           
+       </div>
 
 {% endblock %}

@@ -27,7 +27,7 @@ body{
   padding: 30px;
 }
 
-.wrapper .title{
+.title{
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 25px;
@@ -53,21 +53,21 @@ body{
   width: 100%;
 }
 
-.wrapper .form .inputfield{
+.inputfield{
   margin-bottom: 15px;
   display: flex;
   align-items: center;
 }
 
-.wrapper .form .inputfield label{
+.form .inputfield label{
    width: 200px;
    color: #757575;
    margin-right: 10px;
   font-size: 14px;
 }
 
-.wrapper .form .inputfield .input,
-.wrapper .form .inputfield .textarea{
+ .form .inputfield .input,
+ .form .inputfield .textarea{
   width: 100%;
   outline: none;
   border: 1px solid #d5dbd9;
@@ -83,13 +83,13 @@ body{
   resize: none;
 }
 
-.wrapper .form .inputfield .custom_select{
+ .form .inputfield .custom_select{
   position: relative;
   width: 100%;
   height: 37px;
 }
 
-.wrapper .form .inputfield .custom_select:before{
+.form .inputfield .custom_select:before{
   content: "";
   position: absolute;
   top: 12px;
@@ -99,7 +99,7 @@ body{
   pointer-events: none;
 }
 
-.wrapper .form .inputfield .custom_select select{
+ .form .inputfield .custom_select select{
   -webkit-appearance: none;
   -moz-appearance:   none;
   appearance:        none;
@@ -114,37 +114,37 @@ body{
 }
 
 
-.wrapper .form .inputfield .input:focus,
-.wrapper .form .inputfield .textarea:focus,
-.wrapper .form .inputfield .custom_select select:focus{
+.form .inputfield .input:focus,
+ .form .inputfield .textarea:focus,
+ .form .inputfield .custom_select select:focus{
   border: 1px solid #c48e8e;
 }
 
-.wrapper .form .inputfield p{
+ .form .inputfield p{
    font-size: 14px;
    color: #757575;
 }
-.wrapper .form .inputfield .check{
+ .form .inputfield .check{
   width: 15px;
   height: 15px;
   position: relative;
   display: block;
   cursor: pointer;
 }
-.wrapper .form .inputfield .check input[type="checkbox"]{
+ .form .inputfield .check input[type="checkbox"]{
   position: absolute;
   top: 0;
   left: 0;
   opacity: 0;
 }
-.wrapper .form .inputfield .check .checkmark{
+ .form .inputfield .check .checkmark{
   width: 15px;
   height: 15px;
   border: 1px solid #c48e8e;
   display: block;
   position: relative;
 }
-.wrapper .form .inputfield .check .checkmark:before{
+.form .inputfield .check .checkmark:before{
   content: "";
   position: absolute;
   top: 1px;
@@ -156,15 +156,15 @@ body{
   transform: rotate(-45deg);
   display: none;
 }
-.wrapper .form .inputfield .check input[type="checkbox"]:checked ~ .checkmark{
+.form .inputfield .check input[type="checkbox"]:checked ~ .checkmark{
   background: #c48e8e;
 }
 
-.wrapper .form .inputfield .check input[type="checkbox"]:checked ~ .checkmark:before{
+.form .inputfield .check input[type="checkbox"]:checked ~ .checkmark:before{
   display: block;
 }
 
-.wrapper .form .inputfield .btn{
+.btn{
   width: 100%;
    padding: 8px 10px;
   font-size: 15px; 
@@ -176,7 +176,8 @@ body{
   outline: none;
 }
 
-.wrapper .form .inputfield .btn:hover{
+.btn:hover{
+  color: #fff;
   background: #8c6464;
 }
 
@@ -218,6 +219,9 @@ table thead tr th{
   justify-content: space-around;
   align-items: center;
   height: 500px;
+}
+.additions{
+  height: 200px !important;
 }
 .box{
   display: flex;

@@ -4,7 +4,7 @@
 {% block content %}
 {% if data %}
 
-<h2>Daily Reports</h2>
+<h2 class="view_title">Daily Reports</h2>
 <table class="table table-bordered table-hover">
   <thead class="thead-dark">
      <tr>
@@ -19,15 +19,20 @@
           <td>{{ type.Revenue_id }}</td>
           <td>{{ type.name}}</td>
           <td>{{ type.Revenue}}</td>
-
-
-
     </tr>
 
   {% endfor %}
     <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
     <tr>
-        <td>Total:</td>
+        <td></td>
+        <td></td>
+        <td style="font-weight:600">Total:</td>
         <td>{{ total }}</td>
     </tr>
     </tfoot>
